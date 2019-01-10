@@ -11,6 +11,7 @@
     <LinearLayout android:layout_columnWeight="1" android:layout_columnSpan="3" android:layout_height="wrap_content" android:background="@color/colorPrimary">
 
         <TextView
+            android:id="@+id/txvTorn"
             android:textColor="#ffffff"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -21,7 +22,7 @@
             android:padding="10dp"/>
     </LinearLayout>
 
-    <ImageButton android:id="@+id/btn0" android:src="@drawable/cross"  android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
+    <ImageButton android:id="@+id/btn0" android:src="@drawable/round"  android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
     <ImageButton android:id="@+id/btn1" android:src="@drawable/cross"  android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
     <ImageButton android:id="@+id/btn2"                                android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
     <ImageButton android:id="@+id/btn3" android:src="@drawable/cross"  android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
