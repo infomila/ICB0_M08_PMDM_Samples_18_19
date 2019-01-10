@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:columnCount="3"
+    android:rowCount="4"
+    xmlns:grid="http://schemas.android.com/apk/res-auto"
+    tools:context=".MainActivity">
+
+    <LinearLayout android:layout_columnWeight="1" android:layout_columnSpan="3" android:layout_height="wrap_content" android:background="@color/colorPrimary">
+
+        <TextView
+            android:textColor="#ffffff"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="My turn"
+            android:textAlignment="center"
+            android:textSize="24sp"
+            android:textStyle="bold"
+            android:padding="10dp"/>
+    </LinearLayout>
+
+    <ImageButton android:id="@+id/btn0" android:src="@drawable/cross"  android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
+    <ImageButton android:id="@+id/btn1" android:src="@drawable/cross"  android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
+    <ImageButton android:id="@+id/btn2"                                android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
+    <ImageButton android:id="@+id/btn3" android:src="@drawable/cross"  android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
+    <ImageButton android:id="@+id/btn4" android:src="@drawable/cross"  android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
+    <ImageButton android:id="@+id/btn5" android:src="@drawable/round"  android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
+    <ImageButton android:id="@+id/btn6" android:src="@drawable/cross"  android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
+    <ImageButton android:id="@+id/btn7" android:src="@drawable/cross"  android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
+    <ImageButton android:id="@+id/btn8" android:src="@drawable/round"  android:scaleType="fitCenter" android:layout_width="0dp" android:layout_height="0dp"   android:background="@drawable/fons_boto" android:layout_rowWeight="1" android:layout_columnWeight="1"></ImageButton>
+
+    </GridLayout>

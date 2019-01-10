@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+     android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:orientation="horizontal">
+
+
+<include layout="@layout/search_box"
+    android:layout_height="match_parent"
+    android:layout_width="0dp"
+    android:layout_weight="1" ></include>
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:layout_height="match_parent" android:orientation="vertical">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="Al fer include podem reutilitzar trocets de layout, compartint-los en diferents versions de layouts (horitzontals / verticals / versions grans....etc."/>
+    <Button
+        android:layout_width="match_parent"
+
+        android:layout_height="wrap_content"
+        android:text="jnasdjfjkasjkdf"/>
+    </LinearLayout>
+
+</LinearLayout>
