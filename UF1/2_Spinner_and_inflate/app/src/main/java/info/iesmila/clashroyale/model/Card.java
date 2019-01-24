@@ -27,7 +27,7 @@ public class Card
     
     
     
-    public List<Card> getCartes(){
+    public static List<Card> getCartes(){
 
         if(_cartes==null) {
                 _cartes = new ArrayList<Card>();
@@ -37,7 +37,7 @@ public class Card
                 _cartes.add(new Card(2, "Skeleton Army", Rarity.EPIC, R.drawable.skeletons,
                         " Spawns an army of Skeletons. Meet Larry and his friends Harry, Gerry, Terry, Mary, etc. ",
                         3 ));
-                _cartes.add(new Card(3, "Giant", Rarity.RARE, R.drawable.giant, 
+                _cartes.add(new Card(3, "Giant", Rarity.EPIC, R.drawable.giant,
                         " Slow but durable, only attacks buildings. A real one-man wrecking crew!  ",
                         5 ));
                 _cartes.add(new Card(4, "Spear Goblins", Rarity.COMMON, R.drawable.spear_goblins, 
@@ -48,8 +48,49 @@ public class Card
         return _cartes;
         
     }
-    
-    
-    
+
+    public Rarity getRarity() {
+        return rarity;
+    }
+
+    public void setRarity(Rarity rarity) {
+        this.rarity = rarity;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getDrawable() {
+        return drawable;
+    }
+
+    public void setDrawable(int drawable) {
+        this.drawable = drawable;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
+
+    public void setDesc(String desc) {
+        this.desc = desc;
+    }
+
+    public int getElixirCost() {
+        return elixirCost;
+    }
+
+    public void setElixirCost(int elixirCost) {
+        this.elixirCost = elixirCost;
+    }
 
 }
