@@ -6,6 +6,8 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
+import info.iesmila.clashroyale.model.Card;
+
 public class RecyclerActivity extends AppCompatActivity {
 
     @Override
@@ -17,7 +19,8 @@ public class RecyclerActivity extends AppCompatActivity {
         LinearLayoutManager llm = new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false);
         rcvCards.setLayoutManager(llm);
         //--------------------------------------------------------
-
+        CardAdapter adapter = new CardAdapter(Card.getCartes());
+        rcvCards.setAdapter(adapter);
 
     }
 }

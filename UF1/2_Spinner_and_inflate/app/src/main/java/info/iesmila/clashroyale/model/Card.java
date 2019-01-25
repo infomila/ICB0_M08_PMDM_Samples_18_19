@@ -13,6 +13,7 @@ public class Card
     int drawable;
     String desc;    
     int elixirCost;
+    boolean selected;
 
     public Card(int id,  String nom, Rarity raresa, int drawable, String desc, int elixirCost) {
         this.rarity = raresa;
@@ -93,4 +94,15 @@ public class Card
         this.elixirCost = elixirCost;
     }
 
+    public boolean isSelected() {
+        return selected;
+    }
+
+    public void setSelected(boolean selected) {
+        this.selected = selected;
+    }
+
+    public void switchSelected() {
+        this.selected = !selected;
+    }
 }
