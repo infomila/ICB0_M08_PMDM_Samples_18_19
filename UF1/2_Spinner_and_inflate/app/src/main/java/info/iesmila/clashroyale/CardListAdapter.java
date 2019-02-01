@@ -18,7 +18,7 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
     /**
      * Conté la posició actualment seleccionada.
      */
-    private int mSelectedPosition=2;
+    private int mSelectedPosition=-1;
 
     private List<Card> mCartes;
     private Main2Activity mActivity;
@@ -26,6 +26,13 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
     public CardListAdapter( List<Card> pCartes, Main2Activity pActivity) {
         mCartes = pCartes;
         mActivity = pActivity;
+    }
+
+    public void esborraSeleccionat() {
+
+        mCartes.remove(mSelectedPosition);
+        notifyItemRemoved(mSelectedPosition);
+
     }
 
 
@@ -74,11 +81,34 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
             holder.imgPhoto.setImageResource(c.getDrawable());
             if(position == mSelectedPosition) {
                 holder.itemView.setBackgroundResource(R.drawable.background_selected_card);
+            } else {
+                holder.itemView.setBackground(null  );
             }
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    int previamentSeleccionada = mSelectedPosition;
+
+                    if(mSelectedPosition == position) {
+                        mSelectedPosition = -1;
+                    } else {
+                        mSelectedPosition = position;
+                    }
+                    notifyItemChanged(previamentSeleccionada);
+                    notifyItemChanged(mSelectedPosition);
+                }
+            });
+            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    int previamentSeleccionada = mSelectedPosition;
                     mSelectedPosition = position;
+                    notifyItemChanged(mSelectedPosition);
+                    notifyItemChanged(previamentSeleccionada);
+
+                    mActivity.obrirMenuContextual();
+                    return true;
                 }
             });
 
