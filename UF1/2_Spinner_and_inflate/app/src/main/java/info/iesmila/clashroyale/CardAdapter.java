@@ -17,9 +17,10 @@ import info.iesmila.clashroyale.model.Card;
 public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder> {
 
     private List<Card> mCartes;
-
-    public CardAdapter(List<Card> pCartes) {
+    private RecyclerActivity mActivity;
+    public CardAdapter(List<Card> pCartes, RecyclerActivity activity) {
         mCartes = pCartes;
+        mActivity = activity;
     }
 
 
