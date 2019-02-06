@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.ActionMode;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -84,6 +85,14 @@ public class Main2Activity extends AppCompatActivity {
 
         mAdapter = new CardListAdapter(Card.getCartes(), this);
         rcvCards.setAdapter(mAdapter);
+
+
+        //----------------------------------------------
+        // Programació el ItemTouchHelper del Recycler per habilitar el swipe i el drag&drop
+        SimpleItemTouchHelperCallback callback = new SimpleItemTouchHelperCallback(mAdapter);
+        ItemTouchHelper ith = new ItemTouchHelper(callback);
+        ith.attachToRecyclerView(rcvCards);
+
 
         //----------------------------------------------
         // Programació del ToolBar

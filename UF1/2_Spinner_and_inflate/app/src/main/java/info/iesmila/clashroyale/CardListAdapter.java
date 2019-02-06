@@ -1,19 +1,38 @@
 package info.iesmila.clashroyale;
 
 import android.support.annotation.NonNull;
+import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import java.util.Collections;
 import java.util.List;
 
 import info.iesmila.clashroyale.model.Card;
 import info.iesmila.clashroyale.model.Rarity;
 
-public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardListAdapterViewHolder> {
+public class CardListAdapter extends
+        RecyclerView.Adapter<CardListAdapter.CardListAdapterViewHolder>
+        implements ItemTouchHelperAdapter
+{
 
+    //============================== Mètodes de ItemTouchHelperAdapter =========================
+    @Override
+    public void onItemDelete(int position) {
+        mCartes.remove(position);
+        notifyItemRemoved(position);
+    }
+
+    @Override
+    public void onItemDragged(int positionFrom, int positionTo) {
+        Collections.swap(mCartes,positionFrom, positionTo);
+        notifyItemMoved(positionFrom, positionTo);
+    }
+    //==========================================================================================
 
     /**
      * Conté la posició actualment seleccionada.
@@ -36,11 +55,14 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
     }
 
 
+
     static class CardListAdapterViewHolder extends RecyclerView.ViewHolder {
 
         public TextView txvName;
         public TextView txvDesc;
         public ImageView imgPhoto;
+        public LinearLayout llyInnerRow;
+        public ImageView imvHandle;
 
         public CardListAdapterViewHolder(View itemView) {
             super(itemView);
@@ -48,6 +70,8 @@ public class CardListAdapter extends RecyclerView.Adapter<CardListAdapter.CardLi
             txvName = itemView.findViewById(R.id.txvName);
             txvDesc = itemView.findViewById(R.id.txvDesc);
             imgPhoto = itemView.findViewById(R.id.imgPhoto);
+            llyInnerRow = itemView.findViewById(R.id.llyInnerRow);
+            imvHandle = itemView.findViewById(R.id.imvHandle);
         }
     }
 
