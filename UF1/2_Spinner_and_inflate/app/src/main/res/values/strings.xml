@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">ClashRoyale</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
 </resources>

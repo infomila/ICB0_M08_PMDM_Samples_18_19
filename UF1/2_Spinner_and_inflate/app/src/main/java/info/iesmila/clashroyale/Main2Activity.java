@@ -83,6 +83,9 @@ public class Main2Activity extends AppCompatActivity {
                 new LinearLayoutManager(this,LinearLayoutManager.VERTICAL,false));
         rcvCards.setHasFixedSize(true);
 
+
+
+
         mAdapter = new CardListAdapter(Card.getCartes(), this);
         rcvCards.setAdapter(mAdapter);
 
@@ -91,6 +94,9 @@ public class Main2Activity extends AppCompatActivity {
         // Programació el ItemTouchHelper del Recycler per habilitar el swipe i el drag&drop
         SimpleItemTouchHelperCallback callback = new SimpleItemTouchHelperCallback(mAdapter);
         ItemTouchHelper ith = new ItemTouchHelper(callback);
+
+        mAdapter.setItemTouchHelper(ith);
+
         ith.attachToRecyclerView(rcvCards);
 
 

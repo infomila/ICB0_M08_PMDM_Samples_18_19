@@ -53,7 +53,9 @@
     <ImageView
         android:id="@+id/imvHandle"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@android:drawable/ic_menu_more"/>
+        android:layout_gravity="center"
+        android:layout_height="match_parent"
+        android:src="@drawable/handle"
+        android:padding="10dp"/>
 
 </LinearLayout>

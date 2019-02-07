@@ -3,6 +3,7 @@ package info.iesmila.clashroyale;
 import android.support.annotation.NonNull;
 import android.support.constraint.ConstraintLayout;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -28,9 +29,28 @@ public class CardListAdapter extends
     }
 
     @Override
-    public void onItemDragged(int positionFrom, int positionTo) {
-        Collections.swap(mCartes,positionFrom, positionTo);
-        notifyItemMoved(positionFrom, positionTo);
+    public void onItemDragged(int fromPosition, int toPosition) {
+
+        if (fromPosition < toPosition) {
+            for (int i = fromPosition; i < toPosition; i++) {
+                Collections.swap(mCartes, i, i + 1);
+            }
+        } else {
+            for (int i = fromPosition; i > toPosition; i--) {
+                Collections.swap(mCartes, i, i - 1);
+            }
+        }
+
+        // Actualitzem la posició seleccionada si el que hem mogut és justament el que estava seleccionat.
+        if(fromPosition==mSelectedPosition) {
+            mSelectedPosition = toPosition;
+        } else if(mSelectedPosition == toPosition) {
+            mSelectedPosition = fromPosition;
+        }
+
+        notifyItemMoved(fromPosition, toPosition);
+        //notifyItemMoved(toPosition, fromPosition);
+
     }
     //==========================================================================================
 
@@ -41,8 +61,9 @@ public class CardListAdapter extends
 
     private List<Card> mCartes;
     private Main2Activity mActivity;
+    private ItemTouchHelper mIth;
 
-    public CardListAdapter( List<Card> pCartes, Main2Activity pActivity) {
+    public CardListAdapter(List<Card> pCartes, Main2Activity pActivity ) {
         mCartes = pCartes;
         mActivity = pActivity;
     }
@@ -54,9 +75,12 @@ public class CardListAdapter extends
 
     }
 
+    public void setItemTouchHelper(ItemTouchHelper itemTouchHelper) {
+        this.mIth = itemTouchHelper;
+    }
 
 
-    static class CardListAdapterViewHolder extends RecyclerView.ViewHolder {
+    class CardListAdapterViewHolder extends RecyclerView.ViewHolder {
 
         public TextView txvName;
         public TextView txvDesc;
@@ -72,6 +96,43 @@ public class CardListAdapter extends
             imgPhoto = itemView.findViewById(R.id.imgPhoto);
             llyInnerRow = itemView.findViewById(R.id.llyInnerRow);
             imvHandle = itemView.findViewById(R.id.imvHandle);
+
+            // programem els listeners
+            itemView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    int previamentSeleccionada = CardListAdapter.this.mSelectedPosition;
+
+                    if(mSelectedPosition == getAdapterPosition()) {
+                        mSelectedPosition = -1;
+                    } else {
+                        mSelectedPosition = getAdapterPosition();
+                    }
+                    notifyItemChanged(previamentSeleccionada);
+                    notifyItemChanged(mSelectedPosition);
+                }
+            });
+            llyInnerRow.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+
+                    int previamentSeleccionada = mSelectedPosition;
+                    mSelectedPosition = getAdapterPosition();
+                    notifyItemChanged(mSelectedPosition);
+                    notifyItemChanged(previamentSeleccionada);
+
+                    mActivity.obrirMenuContextual();
+                    return true;
+                }
+            });
+            imvHandle.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    mIth.startDrag(CardListAdapterViewHolder.this);
+                    return true;
+                }
+            });
+
         }
     }
 
@@ -98,7 +159,7 @@ public class CardListAdapter extends
     }
 
     @Override
-    public void onBindViewHolder(@NonNull CardListAdapterViewHolder holder, final int position) {
+    public void onBindViewHolder(final @NonNull CardListAdapterViewHolder holder, final int position) {
             Card c = mCartes.get(position);
             holder.txvName.setText(c.getName());
             holder.txvDesc.setText(c.getDesc());
@@ -108,35 +169,6 @@ public class CardListAdapter extends
             } else {
                 holder.itemView.setBackground(null  );
             }
-            holder.itemView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    int previamentSeleccionada = mSelectedPosition;
-
-                    if(mSelectedPosition == position) {
-                        mSelectedPosition = -1;
-                    } else {
-                        mSelectedPosition = position;
-                    }
-                    notifyItemChanged(previamentSeleccionada);
-                    notifyItemChanged(mSelectedPosition);
-                }
-            });
-            holder.itemView.setOnLongClickListener(new View.OnLongClickListener() {
-                @Override
-                public boolean onLongClick(View v) {
-
-                    int previamentSeleccionada = mSelectedPosition;
-                    mSelectedPosition = position;
-                    notifyItemChanged(mSelectedPosition);
-                    notifyItemChanged(previamentSeleccionada);
-
-                    mActivity.obrirMenuContextual();
-                    return true;
-                }
-            });
-
-
     }
 
     @Override

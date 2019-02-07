@@ -19,10 +19,55 @@
             android:layout_weight="1"
             android:layout_height="match_parent"></android.support.v7.widget.RecyclerView>
         <LinearLayout
-            android:background="#f9f9f9"
+            android:background="@drawable/left_border"
             android:layout_width="0dp"
             android:layout_weight="1"
-            android:layout_height="match_parent"></LinearLayout>
+            android:layout_height="match_parent" android:orientation="vertical"
+            android:padding="15dp">
+
+            <ImageView
+                android:id="@+id/imvPhoto"
+                android:src="@drawable/giant"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_gravity="center"
+                android:layout_weight="3"/>
+            <EditText
+                android:id="@+id/edtName"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:hint="@string/name"/>
+            <EditText
+                android:id="@+id/edtDesc"
+                android:lines="4"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:inputType="text|textMultiLine"
+                android:layout_weight="2"
+                android:hint="@string/description"/>
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal">
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:text="Elixir:"/>
+                <SeekBar
+                    android:id="@+id/sekElixir"
+                    style="@style/Widget.AppCompat.SeekBar.Discrete"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:max="10"
+                    android:min="0"
+                    android:progress="3" />
+
+
+            </LinearLayout>
+
+
+
+        </LinearLayout>
 
     </LinearLayout>
     <android.support.v7.widget.Toolbar
