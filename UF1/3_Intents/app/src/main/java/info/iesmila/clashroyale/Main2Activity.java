@@ -140,9 +140,11 @@ public class Main2Activity extends AppCompatActivity {
         return true;
     }
 
-    @Override
+
+@Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+
         if(requestCode ==NEW_ACTIVITY_INTENT) {
             if(resultCode == Activity.RESULT_OK) {
                 Card nova = data.getParcelableExtra(NEW_ACTIVITY_INTENT_PARAM___CARD);

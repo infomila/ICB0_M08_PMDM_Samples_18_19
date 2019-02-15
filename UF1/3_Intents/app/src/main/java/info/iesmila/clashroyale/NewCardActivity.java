@@ -2,6 +2,9 @@ package info.iesmila.clashroyale;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -10,13 +13,27 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 
+import java.io.File;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 import info.iesmila.clashroyale.model.Card;
 
 import static info.iesmila.clashroyale.Main2Activity.NEW_ACTIVITY_INTENT_PARAM___CARD;
 
 public class NewCardActivity extends AppCompatActivity {
 
+    private static final int REQUEST_IMAGE_CAPTURE = 1 ;
+
     Card mCurrentCard;
+
+    //----------------
+    ImageView imvPhoto;
+    EditText edtName;
+    EditText edtDesc;
+    SeekBar sekElixir;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -28,10 +45,10 @@ public class NewCardActivity extends AppCompatActivity {
         int id = i.getIntExtra("id", -1);
         mCurrentCard = i.getParcelableExtra(NEW_ACTIVITY_INTENT_PARAM___CARD);
 
-        final ImageView imvPhoto = findViewById(R.id.imvPhoto);
-        final EditText edtName = findViewById(R.id.edtName);
-        final EditText edtDesc = findViewById(R.id.edtDesc);
-        final SeekBar sekElixir = findViewById(R.id.sekElixir);
+        imvPhoto = findViewById(R.id.imvPhoto);
+        edtName = findViewById(R.id.edtName);
+        edtDesc = findViewById(R.id.edtDesc);
+        sekElixir = findViewById(R.id.sekElixir);
 
         Button btnCancel =findViewById(R.id.btnCancel);
         Button btnSave = findViewById(R.id.btnSave);
@@ -62,6 +79,46 @@ public class NewCardActivity extends AppCompatActivity {
             }
         });
 
+        imvPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
+                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                }
 
+            }
+        });
     }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+            Bundle extras = data.getExtras();
+            Bitmap imageBitmap = (Bitmap) extras.get("data");
+            imvPhoto.setImageBitmap(imageBitmap);
+        }
+    }
+
+
+    private File createImageFile() throws IOException {
+        // Create an image file name
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+        String imageFileName = "JPEG_" + timeStamp + "_";
+        File storageDir = getExternalFilesDir(Environment.DIRECTORY_PICTURES);
+        File image = File.createTempFile(
+                imageFileName,  /* prefix */
+                ".jpg",         /* suffix */
+                storageDir      /* directory */
+        );
+
+        // Save a file: path for use with ACTION_VIEW intents
+        mCurrentPhotoPath = image.getAbsolutePath();
+        return image;
+    }
+
+
 }
