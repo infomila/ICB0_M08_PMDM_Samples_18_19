@@ -80,7 +80,8 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 txvName.setText(c.getName());
                 txvDesc.setText(c.getDesc());
                 txvElixirCost.setText(""+c.getElixirCost());
-                imgPhoto.setImageResource(c.getDrawable());
+                //imgPhoto.setImageResource(c.getDrawable());
+                c.loadPhoto(imgPhoto);
                 llyCardContainer.addView(cardView);
             }
         }

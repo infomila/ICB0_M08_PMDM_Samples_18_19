@@ -1,12 +1,16 @@
 package info.iesmila.clashroyale.model;
 
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.widget.ImageView;
 
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import info.iesmila.clashroyale.PictureUtils;
 import info.iesmila.clashroyale.R;
 
 public class Card implements Parcelable
@@ -14,7 +18,15 @@ public class Card implements Parcelable
     Rarity rarity;
     int id;
     String name;
+
+    //------------------------------
+    // Si photPath és null, usarem drawable
     int drawable;
+
+
+    String photoPath;
+    //------------------------------
+
     String desc;    
     int elixirCost;
     boolean selected;
@@ -74,7 +86,7 @@ public class Card implements Parcelable
         this.name = name;
     }
 
-    public int getDrawable() {
+    private int getDrawable() {
         return drawable;
     }
 
@@ -110,6 +122,15 @@ public class Card implements Parcelable
         this.selected = !selected;
     }
 
+    public String getPhotoPath() {
+        return photoPath;
+    }
+
+    public void setPhotoPath(String photoPath) {
+        this.photoPath = photoPath;
+    }
+
+
     @Override
     public int describeContents() {
         return 0;
@@ -124,6 +145,7 @@ public class Card implements Parcelable
         dest.writeInt(elixirCost);
         dest.writeInt(selected?1:0);
         dest.writeInt( rarity.ordinal());
+        dest.writeString(photoPath);
     }
 
     public static final Creator<Card> CREATOR = new Creator<Card>() {
@@ -146,6 +168,7 @@ public class Card implements Parcelable
         elixirCost = in.readInt();
         selected = in.readByte() != 0;
         rarity = Rarity.values()[in.readInt()];
+        photoPath = in.readString();
     }
 
 
@@ -155,5 +178,19 @@ public class Card implements Parcelable
             maxId = c.getId();
         }
         return maxId+1;
+    }
+
+    public void loadPhoto(ImageView imgPhoto) {
+
+        if(photoPath!=null) {
+            //tenim una imatge de càmera
+            //Bitmap bmp = BitmapFactory.decodeFile(photoPath);
+            //imgPhoto.setImageBitmap(bmp);
+            PictureUtils.setPic(imgPhoto, photoPath);
+
+        } else {
+            imgPhoto.setImageResource(drawable);
+        }
+
     }
 }

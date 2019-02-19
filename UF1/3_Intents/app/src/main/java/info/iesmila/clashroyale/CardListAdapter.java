@@ -163,7 +163,9 @@ public class CardListAdapter extends
             Card c = mCartes.get(position);
             holder.txvName.setText(c.getName());
             holder.txvDesc.setText(c.getDesc());
-            holder.imgPhoto.setImageResource(c.getDrawable());
+            //holder.imgPhoto.setImageResource(c.getDrawable());
+            c.loadPhoto(holder.imgPhoto);
+
             if(position == mSelectedPosition) {
                 holder.itemView.setBackgroundResource(R.drawable.background_selected_card);
             } else {

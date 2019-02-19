@@ -3,8 +3,12 @@ package info.iesmila.clashroyale;
 import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Picture;
+import android.net.Uri;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -26,13 +30,14 @@ public class NewCardActivity extends AppCompatActivity {
 
     private static final int REQUEST_IMAGE_CAPTURE = 1 ;
 
-    Card mCurrentCard;
+    private Card mCurrentCard;
 
     //----------------
-    ImageView imvPhoto;
-    EditText edtName;
-    EditText edtDesc;
-    SeekBar sekElixir;
+    private ImageView imvPhoto;
+    private EditText edtName;
+    private EditText edtDesc;
+    private SeekBar sekElixir;
+    private String mCurrentPhotoPath;
 
 
     @Override
@@ -53,7 +58,8 @@ public class NewCardActivity extends AppCompatActivity {
         Button btnCancel =findViewById(R.id.btnCancel);
         Button btnSave = findViewById(R.id.btnSave);
 
-        imvPhoto.setImageResource(mCurrentCard.getDrawable());
+        //imvPhoto.setImageResource(mCurrentCard.getDrawable());
+        mCurrentCard.loadPhoto(imvPhoto);
         edtName.setText(mCurrentCard.getName());
         edtDesc.setText(mCurrentCard.getDesc());
         sekElixir.setProgress(mCurrentCard.getElixirCost());
@@ -84,7 +90,29 @@ public class NewCardActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
                 if (takePictureIntent.resolveActivity(getPackageManager()) != null) {
-                    startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+
+                    // Create the File where the photo should go
+                    File photoFile = null;
+                    try {
+                        photoFile = createImageFile();
+                    } catch (IOException ex) {
+                        // Error occurred while creating the File
+                    }
+
+
+                    // Continue only if the File was successfully created
+                    if (photoFile != null) {
+                        Uri photoURI = FileProvider.getUriForFile(NewCardActivity.this,
+                                "com.example.android.fileprovider",
+                                photoFile);
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI);
+                        startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
+                    }
+
+
+
+
+                    //startActivityForResult(takePictureIntent, REQUEST_IMAGE_CAPTURE);
                 }
 
             }
@@ -97,11 +125,22 @@ public class NewCardActivity extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
 
         if (requestCode == REQUEST_IMAGE_CAPTURE && resultCode == RESULT_OK) {
+
+            //Bitmap imageBitmap = BitmapFactory.decodeFile(mCurrentPhotoPath);
+            /*
             Bundle extras = data.getExtras();
             Bitmap imageBitmap = (Bitmap) extras.get("data");
-            imvPhoto.setImageBitmap(imageBitmap);
+            */
+            //imvPhoto.setImageBitmap(imageBitmap);
+
+
+            PictureUtils.setPic(imvPhoto, mCurrentPhotoPath);
+
+            mCurrentCard.setPhotoPath(mCurrentPhotoPath);
+
         }
     }
+
 
 
     private File createImageFile() throws IOException {

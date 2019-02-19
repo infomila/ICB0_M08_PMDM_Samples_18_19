@@ -43,7 +43,9 @@ public class CardAdapter extends RecyclerView.Adapter<CardAdapter.CardViewHolder
         holder.txvDesc.setText( c.getDesc() );
         holder.txvName.setText( c.getName() );
         holder.txvElixirCost.setText( ""+c.getElixirCost() );
-        holder.imgPhoto.setImageResource( c.getDrawable() );
+        //holder.imgPhoto.setImageResource( c.getDrawable() );
+        c.loadPhoto(holder.imgPhoto);
+
         holder.frlFila.setBackgroundColor(c.isSelected()?Color.GREEN:Color.WHITE);
 
         //------------------------------------------------------------------
