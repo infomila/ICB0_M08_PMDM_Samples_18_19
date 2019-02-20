@@ -7,6 +7,7 @@ import android.graphics.BitmapFactory;
 import android.graphics.Picture;
 import android.net.Uri;
 import android.os.Environment;
+import android.os.PersistableBundle;
 import android.provider.MediaStore;
 import android.support.v4.content.FileProvider;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +40,27 @@ public class NewCardActivity extends AppCompatActivity {
     private SeekBar sekElixir;
     private String mCurrentPhotoPath;
 
+
+    @Override
+    public void onSaveInstanceState(Bundle outState, PersistableBundle outPersistentState) {
+        super.onSaveInstanceState(outState, outPersistentState);
+        storeCardTempData();
+        outState.putParcelable("currentCard", mCurrentCard);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        mCurrentCard = savedInstanceState.getParcelable("currentCard");
+        if(mCurrentCard!=null) {
+            edtName.setText(mCurrentCard.getName());
+            edtDesc.setText(mCurrentCard.getDesc());
+            sekElixir.setProgress(mCurrentCard.getElixirCost());
+            mCurrentPhotoPath = mCurrentCard.getPhotoPath();
+
+            PictureUtils.setPic(imvPhoto, mCurrentPhotoPath);
+        }
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -75,9 +97,7 @@ public class NewCardActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mCurrentCard.setName(edtName.getText().toString());
-                mCurrentCard.setDesc(edtDesc.getText().toString());
-                mCurrentCard.setElixirCost(sekElixir.getProgress());
+                storeCardTempData();
                 Intent back = new Intent();
                 back.putExtra(NEW_ACTIVITY_INTENT_PARAM___CARD, mCurrentCard);
                 NewCardActivity.this.setResult(Activity.RESULT_OK, back);
@@ -117,6 +137,12 @@ public class NewCardActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private void storeCardTempData() {
+        mCurrentCard.setName(edtName.getText().toString());
+        mCurrentCard.setDesc(edtDesc.getText().toString());
+        mCurrentCard.setElixirCost(sekElixir.getProgress());
     }
 
 

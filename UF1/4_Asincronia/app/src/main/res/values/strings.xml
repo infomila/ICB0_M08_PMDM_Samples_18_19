@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">ClashRoyale</string>
+    <string name="name">Name</string>
+    <string name="description">Description</string>
+    <string name="save">Save</string>
+    <string name="cancel">Cancel</string>
+</resources>
