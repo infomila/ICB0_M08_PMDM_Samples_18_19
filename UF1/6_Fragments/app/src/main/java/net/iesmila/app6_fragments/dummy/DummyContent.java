@@ -57,12 +57,19 @@ public class DummyContent {
         public final String id;
         public final String content;
         public final String details;
+        public final String imageURI;
 
         public DummyItem(String id, String content, String details) {
+            this(id, content, details,
+                    "android.resource://net.iesmila.app6_fragments/drawable/newcard");
+        }
+        public DummyItem(String id, String content, String details, String imageURI) {
             this.id = id;
             this.content = content;
             this.details = details;
+            this.imageURI = imageURI;
         }
+
 
         @Override
         public String toString() {

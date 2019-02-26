@@ -10,10 +10,22 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.google.gson.FieldNamingPolicy;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import net.iesmila.app6_fragments.ItemAPI.ItemAPI;
 import net.iesmila.app6_fragments.dummy.DummyContent;
 import net.iesmila.app6_fragments.dummy.DummyContent.DummyItem;
+import net.iesmila.app6_fragments.model.Item;
 
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import retrofit2.Retrofit;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * A fragment representing a list of Items.
@@ -21,7 +33,7 @@ import java.util.List;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class FragmentItemList extends Fragment {
+public class FragmentItemList extends Fragment implements Callback<List<Item>> {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -69,9 +81,35 @@ public class FragmentItemList extends Fragment {
             } else {
                 recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
             }
-            recyclerView.setAdapter(new ItemRecyclerViewAdapter(DummyContent.ITEMS, mListener));
+
+            loadData();
+
         }
         return view;
+    }
+
+    private void loadData() {
+
+        // S'inicialitza el parser de GSON
+        Gson gson = new GsonBuilder()
+                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
+                .create();
+        // S'incialitza Retrofit
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl("http://10.132.0.0/items/")
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+        ItemAPI api = retrofit.create(ItemAPI.class);
+
+        Call<List<Item>> call = api.getItems();
+        call.enqueue(this);
+
+
+        // S'incia la descàrrega
+
+
+
+
     }
 
 
@@ -92,6 +130,24 @@ public class FragmentItemList extends Fragment {
         mListener = null;
     }
 
+    private List<Item>  mItems;
+
+    @Override
+    public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+        if(response.code()== 200) { // CODI DE RESPOSTA HTTP :
+            mItems = response.body();
+            ((RecyclerView)getView()).setAdapter(
+                    new ItemRecyclerViewAdapter(
+                            mItems, mListener));
+
+        }
+    }
+
+    @Override
+    public void onFailure(Call<List<Item>> call, Throwable t) {
+
+    }
+
     /**
      * This interface must be implemented by activities that contain this
      * fragment to allow an interaction in this fragment to be communicated
@@ -104,6 +160,6 @@ public class FragmentItemList extends Fragment {
      */
     public interface OnListFragmentInteractionListener {
         // TODO: Update argument type and name
-        void onListItemClick(DummyItem item);
+        void onListItemClick(Item item);
     }
 }

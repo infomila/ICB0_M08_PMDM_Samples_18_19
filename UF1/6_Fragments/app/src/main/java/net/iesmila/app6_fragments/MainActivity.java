@@ -5,6 +5,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
 import net.iesmila.app6_fragments.dummy.DummyContent;
+import net.iesmila.app6_fragments.model.Item;
 
 public class MainActivity extends AppCompatActivity implements
                                         FragmentItemList.OnListFragmentInteractionListener,
@@ -17,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    public void onListItemClick(DummyContent.DummyItem item) {
+    public void onListItemClick(Item item) {
         if(findViewById(R.id.frmDetail)!=null) {
 
             // Estic en Landscape
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements
 
             // Creem un fragment de tipus FragmentDetail i l'enxufem a frmDetail
             // a) Creació del fragment
-            FragmentDetail frag = FragmentDetail.newInstance(item.id);
+            FragmentDetail frag = FragmentDetail.newInstance(item.getId());
             // b) El col·loquem a l'activity
             getSupportFragmentManager().
                     beginTransaction().
@@ -36,7 +37,7 @@ public class MainActivity extends AppCompatActivity implements
             // Estic en portrait
             // Crearem un intent per obrir el DetailActivity
             Intent intent = new Intent(this,  DetailActivity.class );
-            intent.putExtra(DetailActivity.PARAM_ID, item.id );
+            intent.putExtra(DetailActivity.PARAM_ID, item.getId() );
             startActivity(intent);
         }
     }
