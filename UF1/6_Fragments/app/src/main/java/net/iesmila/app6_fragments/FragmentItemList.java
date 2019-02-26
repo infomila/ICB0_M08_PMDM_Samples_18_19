@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import com.google.gson.FieldNamingPolicy;
 import com.google.gson.Gson;
@@ -40,6 +41,9 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
     // TODO: Customize parameters
     private int mColumnCount = 1;
     private OnListFragmentInteractionListener mListener;
+    private ProgressBar prgProgress;
+    private RecyclerView rcyList;
+    private List<Item>  mItems;
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -65,6 +69,14 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
+
+        // ---------------------------------------
+        //  IMPORTANT : AQUESTA LÍNIA FA QUE L'ESTAT DEL FRAGMENT ES MANTINGUI EN
+        //              MEMÒRIA DESPRÉS DE "CONFIGURATION CHANGES" -> ROTACIONS O CANVIS
+        //              DE MIDA DE LA PANTALLA DEGUTS AL TECLAT VIRTUAL
+        // ---------------------------------------
+        this.setRetainInstance(true);
+
     }
 
     @Override
@@ -72,23 +84,30 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
 
+        prgProgress = view.findViewById(R.id.prgProgress);
+        rcyList = view.findViewById(R.id.rcyList);
+
+        prgProgress.setVisibility(View.INVISIBLE);
+
         // Set the adapter
-        if (view instanceof RecyclerView) {
-            Context context = view.getContext();
-            RecyclerView recyclerView = (RecyclerView) view;
-            if (mColumnCount <= 1) {
-                recyclerView.setLayoutManager(new LinearLayoutManager(context));
-            } else {
-                recyclerView.setLayoutManager(new GridLayoutManager(context, mColumnCount));
-            }
 
-            loadData();
+        Context context = view.getContext();
 
+        if (mColumnCount <= 1) {
+            rcyList.setLayoutManager(new LinearLayoutManager(context));
+        } else {
+            rcyList.setLayoutManager(new GridLayoutManager(context, mColumnCount));
         }
+
+        loadData();
+
+
         return view;
     }
 
     private void loadData() {
+
+        prgProgress.setVisibility(View.VISIBLE);
 
         // S'inicialitza el parser de GSON
         Gson gson = new GsonBuilder()
@@ -130,22 +149,27 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
         mListener = null;
     }
 
-    private List<Item>  mItems;
 
     @Override
     public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
+        try {
+            Thread.sleep(8000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        prgProgress.setVisibility(View.INVISIBLE);
+
         if(response.code()== 200) { // CODI DE RESPOSTA HTTP :
             mItems = response.body();
-            ((RecyclerView)getView()).setAdapter(
+            rcyList.setAdapter(
                     new ItemRecyclerViewAdapter(
                             mItems, mListener));
-
         }
     }
 
     @Override
     public void onFailure(Call<List<Item>> call, Throwable t) {
-
+        prgProgress.setVisibility(View.INVISIBLE);
     }
 
     /**
