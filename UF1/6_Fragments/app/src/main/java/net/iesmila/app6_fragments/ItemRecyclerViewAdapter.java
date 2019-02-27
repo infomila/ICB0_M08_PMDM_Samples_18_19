@@ -5,7 +5,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.nostra13.universalimageloader.core.ImageLoader;
 
 import net.iesmila.app6_fragments.FragmentItemList.OnListFragmentInteractionListener;
 import net.iesmila.app6_fragments.dummy.DummyContent.DummyItem;
@@ -21,7 +24,7 @@ import java.util.List;
 public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerViewAdapter.ViewHolder> {
 
     private final List<Item> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private OnListFragmentInteractionListener mListener;
 
     private int mSelectedPosition = -1;
 
@@ -39,9 +42,14 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getId());
-        holder.mContentView.setText(mValues.get(position).getContent());
+        Item itemActual = mValues.get(position);
+        holder.mItem = itemActual;
+        holder.mIdView.setText(itemActual.getId());
+        holder.mContentView.setText(itemActual.getContent());
+
+        // Mostrar la imatge de la posició actual
+        ImageLoader loader = ImageLoader.getInstance();
+        loader.displayImage( itemActual.getImageURI(), holder.mImvPhoto );
 
         if(position==mSelectedPosition) {
             holder.mView.setBackgroundColor(Color.GREEN);
@@ -72,10 +80,19 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
         return mValues.size();
     }
 
+    public void setListener(OnListFragmentInteractionListener listener) {
+        this.mListener = listener;
+    }
+
+    public int getSelectedPosition() {
+        return mSelectedPosition;
+    }
+
     public class ViewHolder extends RecyclerView.ViewHolder {
         public final View mView;
         public final TextView mIdView;
         public final TextView mContentView;
+        public final ImageView mImvPhoto;
         public Item mItem;
 
         public ViewHolder(View view) {
@@ -83,6 +100,7 @@ public class ItemRecyclerViewAdapter extends RecyclerView.Adapter<ItemRecyclerVi
             mView = view;
             mIdView = (TextView) view.findViewById(R.id.item_number);
             mContentView = (TextView) view.findViewById(R.id.content);
+            mImvPhoto = (ImageView) view.findViewById(R.id.imvPhoto);
         }
 
         @Override

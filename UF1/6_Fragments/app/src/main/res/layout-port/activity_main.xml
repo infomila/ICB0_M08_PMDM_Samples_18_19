@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="horizontal"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="#0000ff">
 
-    <fragment
+    <FrameLayout
         android:id="@+id/frgItemList"
-        android:name="net.iesmila.app6_fragments.FragmentItemList"
         android:layout_width="0dp"
         android:layout_weight="1"
-        android:layout_height="match_parent"></fragment>
+        android:layout_height="match_parent"></FrameLayout>
 
 </LinearLayout>

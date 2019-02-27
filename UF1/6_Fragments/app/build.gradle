@@ -29,6 +29,9 @@ dependencies {
     implementation 'com.squareup.retrofit2:retrofit:2.1.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.1.0'
 
+    // Universal Image Loader (https://github.com/nostra13/Android-Universal-Image-Loader/wiki/Quick-Setup)
+    implementation 'com.nostra13.universalimageloader:universal-image-loader:1.9.5'
+
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.2'
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.2'

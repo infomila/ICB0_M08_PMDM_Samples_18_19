@@ -6,6 +6,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,6 +45,8 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
     private ProgressBar prgProgress;
     private RecyclerView rcyList;
     private List<Item>  mItems;
+    private ItemRecyclerViewAdapter mAdapter;
+
 
     /**
      * Mandatory empty constructor for the fragment manager to instantiate the
@@ -66,6 +69,8 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Log.d("SHIT_HAPPENS", "creating fragment");
+
         if (getArguments() != null) {
             mColumnCount = getArguments().getInt(ARG_COLUMN_COUNT);
         }
@@ -83,6 +88,9 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_item_list, container, false);
+
+        Log.d("SHIT_HAPPENS", "onCreateView");
+
 
         prgProgress = view.findViewById(R.id.prgProgress);
         rcyList = view.findViewById(R.id.rcyList);
@@ -106,6 +114,10 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
     }
 
     private void loadData() {
+
+        // Si mItems no és null, vol dir que algú ja ha carregat les dades anteriorment, i procedim directament
+        // a mostrar-les.
+        if(mAdapter!=null) {mostrarDades();return;}
 
         prgProgress.setVisibility(View.VISIBLE);
 
@@ -137,6 +149,7 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
         super.onAttach(context);
         if (context instanceof OnListFragmentInteractionListener) {
             mListener = (OnListFragmentInteractionListener) context;
+            if(mAdapter!=null)  {mAdapter.setListener(mListener);}
         } else {
             throw new RuntimeException(context.toString()
                     + " must implement OnListFragmentInteractionListener");
@@ -147,6 +160,7 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        if(mAdapter!=null)  mAdapter.setListener(null);
     }
 
 
@@ -161,15 +175,29 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
 
         if(response.code()== 200) { // CODI DE RESPOSTA HTTP :
             mItems = response.body();
-            rcyList.setAdapter(
-                    new ItemRecyclerViewAdapter(
-                            mItems, mListener));
+            mostrarDades();
         }
+    }
+
+    private void mostrarDades() {
+        if(mAdapter==null) {
+            mAdapter = new ItemRecyclerViewAdapter(mItems, mListener);
+        }
+        rcyList.setAdapter(mAdapter);
     }
 
     @Override
     public void onFailure(Call<List<Item>> call, Throwable t) {
         prgProgress.setVisibility(View.INVISIBLE);
+    }
+
+    public Item getItemSeleccionat() {
+        if(mAdapter!=null) {
+            int selectedPosition = mAdapter.getSelectedPosition();
+            if(selectedPosition<0) return null;
+            return mItems.get(selectedPosition);
+        }
+        return null;
     }
 
     /**
