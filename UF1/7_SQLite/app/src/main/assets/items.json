@@ -1,0 +1,16 @@
+[
+  {
+    "id": "1",
+    "content":"Un item.",
+    "details": "Blah blah blah",
+    "imageURI": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcToe-PSAektDgBsXLsdybQW6F1wGDdpw2mbm3SaReRPuQ0ec0ns"
+  }
+  ,
+  {
+    "id": "2",
+    "content":"Segon item.",
+    "details": "Més coses diabòliques",
+    "imageURI": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyjADvoBq4REy0_ymd0VOsl41K5tuyvmru9uENB5Tg35ula1zC"
+  }  
+  
+  ]
