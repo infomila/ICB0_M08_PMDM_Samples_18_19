@@ -1,6 +1,7 @@
 package net.iesmila.app6_fragments;
 
 import android.content.Context;
+import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.EditText;
 
+import net.iesmila.app6_fragments.db.DatabaseHelper;
 import net.iesmila.app6_fragments.dummy.DummyContent;
 
 
@@ -103,7 +105,21 @@ public class FragmentDetail extends Fragment {
 
     public void onClickListener(View v) {
         // aquí desem els canvis
-        // ......
+
+        try {
+            DatabaseHelper dbh = new DatabaseHelper(getContext());
+            SQLiteDatabase db = dbh.getWritableDatabase();
+            db.beginTransaction();
+            db.execSQL("update item set content=? , detail=? where id = ?",
+                    new Object[]{
+                            edtContent.getText(),
+                            edtName.getText(),
+                            edtId.getText()
+                    });
+            db.endTransaction();
+        }catch (Exception ex) {
+
+        }
         // notifiquem a l'activity que hem canviat el Ítem
         if(mListener != null) {
             mListener.onItemChanged(mId);

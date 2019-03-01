@@ -1,6 +1,8 @@
 package net.iesmila.app6_fragments;
 
 import android.content.Context;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
@@ -17,10 +19,12 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import net.iesmila.app6_fragments.ItemAPI.ItemAPI;
+import net.iesmila.app6_fragments.db.DatabaseHelper;
 import net.iesmila.app6_fragments.dummy.DummyContent;
 import net.iesmila.app6_fragments.dummy.DummyContent.DummyItem;
 import net.iesmila.app6_fragments.model.Item;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
@@ -35,7 +39,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
  * Activities containing this fragment MUST implement the {@link OnListFragmentInteractionListener}
  * interface.
  */
-public class FragmentItemList extends Fragment implements Callback<List<Item>> {
+public class FragmentItemList extends Fragment  {
 
     // TODO: Customize parameter argument names
     private static final String ARG_COLUMN_COUNT = "column-count";
@@ -121,26 +125,29 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
 
         prgProgress.setVisibility(View.VISIBLE);
 
-        // S'inicialitza el parser de GSON
-        Gson gson = new GsonBuilder()
-                .setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES)
-                .create();
-        // S'incialitza Retrofit
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl("http://10.132.0.0/items/")
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-        ItemAPI api = retrofit.create(ItemAPI.class);
 
-        Call<List<Item>> call = api.getItems();
-        call.enqueue(this);
+        try {
+            DatabaseHelper dbh = new DatabaseHelper(getContext());
+            SQLiteDatabase db = dbh.getWritableDatabase();
+            db.beginTransaction();
+            Cursor c = db.rawQuery("select * from item", null);
 
+            mItems = new ArrayList<Item>();
+            while(c.moveToNext()) {
+                String id = c.getString( c.getColumnIndex("id") );
+                String content = c.getString( c.getColumnIndex("content") );
+                String details = c.getString( c.getColumnIndex("details") );
+                String imageURI = c.getString( c.getColumnIndex("imageURI") );
+                Item i = new Item( id, content, details, imageURI);
+                mItems.add(i);
+            }
+            db.endTransaction();
+            mostrarDades();
 
-        // S'incia la descàrrega
+        }catch (Exception ex) {
 
-
-
-
+        }
+        prgProgress.setVisibility(View.INVISIBLE);
     }
 
 
@@ -164,20 +171,6 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
     }
 
 
-    @Override
-    public void onResponse(Call<List<Item>> call, Response<List<Item>> response) {
-        try {
-            Thread.sleep(8000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        prgProgress.setVisibility(View.INVISIBLE);
-
-        if(response.code()== 200) { // CODI DE RESPOSTA HTTP :
-            mItems = response.body();
-            mostrarDades();
-        }
-    }
 
     private void mostrarDades() {
         if(mAdapter==null) {
@@ -186,10 +179,6 @@ public class FragmentItemList extends Fragment implements Callback<List<Item>> {
         rcyList.setAdapter(mAdapter);
     }
 
-    @Override
-    public void onFailure(Call<List<Item>> call, Throwable t) {
-        prgProgress.setVisibility(View.INVISIBLE);
-    }
 
     public Item getItemSeleccionat() {
         if(mAdapter!=null) {

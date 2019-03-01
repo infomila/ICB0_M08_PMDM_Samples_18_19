@@ -18,6 +18,13 @@ public class Item {
     @Expose
     private String imageURI;
 
+    public Item(String id, String content, String details, String imageURI) {
+        this.id = id;
+        this.content = content;
+        this.details = details;
+        this.imageURI = imageURI;
+    }
+
     public String getId() {
         return id;
     }
