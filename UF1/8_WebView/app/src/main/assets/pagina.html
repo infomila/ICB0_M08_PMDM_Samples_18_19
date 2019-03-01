@@ -1,0 +1,13 @@
+<html>
+    <body>
+        <h1 style="color:red">TITOL</h1>
+        <p onClick="alert('Hello world');">Lorem Ipsum </p>
+        <p id="visites"></p>
+    </body>
+    <script>
+        alert(">>"+Android.getNumeroVisites());
+        var visits = Android.getNumeroVisites();
+        visites.innerHTML = "VISITES:" + visits;
+    </script>
+
+</html>
