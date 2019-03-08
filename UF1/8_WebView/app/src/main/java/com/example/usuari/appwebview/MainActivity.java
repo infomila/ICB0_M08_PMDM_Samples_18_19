@@ -17,11 +17,11 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         webView = findViewById(R.id.webView);
-        webView.setWebChromeClient(new WebChromeClient());
-        webView.setWebViewClient( new WebViewClient());
+        webView.setWebChromeClient(new CustomWebChromeClient());
+        webView.setWebViewClient( new CustomWebViewClient());
 
-        //webView.loadUrl("http://www.google.com");
-
+        webView.loadUrl("http://www.google.com");
+/*
         //Activem el Javascript
         WebSettings settings = webView.getSettings();
         settings.setJavaScriptEnabled(true);
@@ -34,6 +34,6 @@ public class MainActivity extends AppCompatActivity {
         //webView.loadData(html, "text/html", "UTF-8");
 
         webView.loadUrl("file:///android_asset/pagina.html");
-
+*/
     }
 }
