@@ -149,7 +149,6 @@ public class Pad extends View implements SensorEventListener, View.OnTouchListen
             xAcceleration = -event.values[0]*10;
             invalidate();
         }
-
     }
 
     @Override
