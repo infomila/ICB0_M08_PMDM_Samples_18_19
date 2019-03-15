@@ -2,6 +2,7 @@ package com.example.usuari.grafics;
 
 import android.annotation.SuppressLint;
 import android.graphics.Canvas;
+import android.util.Log;
 import android.view.SurfaceHolder;
 
 public class ScenarioThread extends  Thread {
@@ -10,31 +11,50 @@ public class ScenarioThread extends  Thread {
     private SurfaceHolder mHolder;
     private boolean isAlive = true;
 
-    public ScenarioThread(Scenario s) {
+    public ScenarioThread(Scenario s, SurfaceHolder pHolder) {
         mScenario = s;
-        mHolder = s.getHolder();
+        mHolder   = pHolder;
     }
 
     public void kill() {
         isAlive = false;
     }
 
-    @SuppressLint("WrongCall")
+
     @Override
     public void run() {
         super.run();
 
         while(isAlive) {
 
+            try
+            {
+                Thread.sleep(10);
+            } catch (InterruptedException e)
+            {
+                // ignore
+            }
+
+            if(!mHolder.getSurface().isValid()) break;
+
             Canvas c=null;
             try {
-                c = mHolder.lockCanvas();
-                mScenario.onDraw(c);
+               if(mHolder!=null) {
+                    c = mHolder.lockCanvas();
+                    if(c!=null) {
+                        Log.d("FIL", ""+c);
+                        synchronized (mHolder) {
+                            mScenario.dibuixa(c);
+                            //c.drawRGB(255,0,255);
+                        }
+                    }
+                }
+
             } finally {
+
                 // IMPORTANT!! Alliberem el Canvas
                 mHolder.unlockCanvasAndPost(c);
             }
-
         }
     }
 }

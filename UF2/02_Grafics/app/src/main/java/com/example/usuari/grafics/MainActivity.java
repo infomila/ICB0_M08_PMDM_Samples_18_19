@@ -26,6 +26,11 @@ public class MainActivity extends AppCompatActivity {
         //-------------------------------------------------
         setContentView(R.layout.activity_main);
 
+        Scenario s = findViewById(R.id.scenario);
+        Pad p = findViewById(R.id.pad);
+        s.setPad(p);
+
+
     }
 
 

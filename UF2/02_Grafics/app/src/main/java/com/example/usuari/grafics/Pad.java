@@ -19,35 +19,60 @@ import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 
+import org.apache.commons.math3.geometry.euclidean.twod.Vector2D;
+
 import static android.content.Context.SENSOR_SERVICE;
 
 public class Pad extends View implements SensorEventListener, View.OnTouchListener {
 
+
+    private Vector2D padValue;
+
+
     //----- Gravity sensor stuff -----------------------------
-    float yAcceleration;
-    float xAcceleration;
+    private float yAcceleration;
+    private float xAcceleration;
+    private boolean gravityEnabled = true;
     //----------------------------------
 
     private Bitmap mFletxaUp;
     private Bitmap mFletxaDown;
+    //----------------------------------
+    private int diametre;
+    private float radi;
+    private float cx;
+    private float cy;
+
 
     public Pad(Context context, @Nullable AttributeSet attrs) {
         super(context, attrs);
 
+        padValue = new Vector2D(0,0);
+
+        //------------------------------------------------------------------------
+        // Setup grafic resources
+        setupGraficResources();
+
+        //------------------------------------------------------------------------
+        // Setup touch events
+        setOnTouchListener(this);
+        //------------------------------------------------------------------------
+        // Setup sensor for gravity detection
+        setupGravitySensor();
+    }
+
+    public void setGravityEnabled(boolean gravityEnabled) {
+        this.gravityEnabled = gravityEnabled;
+    }
+
+
+    private void setupGraficResources() {
         mFletxaUp = BitmapFactory.decodeResource(this.getResources(), R.drawable.arrow);
         Matrix m = new Matrix();
         m.postRotate(180);
         mFletxaDown = Bitmap.createBitmap(mFletxaUp,0,0,
                 mFletxaUp.getWidth(), mFletxaUp.getHeight(),
                 m,true);
-
-        // Setup touch events
-        setOnTouchListener(this);
-
-        // Setup sensor for gravity detection
-        setupGravitySensor();
-
-
     }
 
     @Override
@@ -59,10 +84,10 @@ public class Pad extends View implements SensorEventListener, View.OnTouchListen
         Paint p = new Paint();
         p.setColor(Color.parseColor("#ff00ff"));
 
-        int diametre = Math.min(getWidth(), getHeight());
-        float radi = diametre/2;
-        float cx = getWidth()/2;
-        float cy = getHeight()/2;
+        diametre = Math.min(getWidth(), getHeight());
+        radi = diametre/2;
+        cx = getWidth()/2;
+        cy = getHeight()/2;
         canvas.drawCircle(cx,cy,radi, p);
 
 
@@ -87,7 +112,7 @@ public class Pad extends View implements SensorEventListener, View.OnTouchListen
         p.setStyle(Paint.Style.STROKE);
         p.setStrokeWidth(2);
 
-        canvas.drawLine(cx,cy, cx+xAcceleration, cy+yAcceleration, p);
+        canvas.drawLine(cx,cy, cx+(float)padValue.getX(), cy+(float)padValue.getY(), p);
     }
 
     private Matrix calculateMatrix(float angle, float cx, float cy, float radiPetit, float warrow, float harrow) {
@@ -118,12 +143,9 @@ public class Pad extends View implements SensorEventListener, View.OnTouchListen
 
     @Override
     public boolean onTouch(View v, MotionEvent event) {
-     /*   //switch(event.getAction())/
-        float x = event.getX()- cx;
-        float y = event.getY()- cy;
-        return false;
-        */
-     return true;
+
+        //@TODO
+        return true;
     }
 
     //-------------------------------------------------------------------------
@@ -143,15 +165,26 @@ public class Pad extends View implements SensorEventListener, View.OnTouchListen
     @Override
     public void onSensorChanged(SensorEvent event) {
 
+        if(!gravityEnabled) return;
+
         if (event.sensor.getType() == Sensor.TYPE_GRAVITY) {
+
             //Set sensor values as acceleration
             yAcceleration = event.values[1]*10;
             xAcceleration = -event.values[0]*10;
+
+            padValue = new Vector2D(xAcceleration,yAcceleration);
+
             invalidate();
         }
     }
 
     @Override
     public void onAccuracyChanged(Sensor sensor, int accuracy) { /*nothing to do*/ }
+
+
+    public Vector2D getPadValue(){
+        return padValue;
+    }
 
 }
