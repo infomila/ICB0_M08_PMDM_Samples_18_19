@@ -39,21 +39,23 @@ public class ScenarioThread extends  Thread {
 
             Canvas c=null;
             try {
-               if(mHolder!=null) {
+                if (mHolder != null) {
                     c = mHolder.lockCanvas();
-                    if(c!=null) {
-                        Log.d("FIL", ""+c);
+                    if (c != null) {
+                        Log.d("FIL", "" + c);
                         synchronized (mHolder) {
                             mScenario.dibuixa(c);
                             //c.drawRGB(255,0,255);
                         }
                     }
                 }
+            } catch(Exception ex) {
+              Log.e("ERROR", "error en el fil de draw", ex);
 
             } finally {
 
                 // IMPORTANT!! Alliberem el Canvas
-                mHolder.unlockCanvasAndPost(c);
+                if(mHolder.getSurface().isValid()) mHolder.unlockCanvasAndPost(c);
             }
         }
     }
