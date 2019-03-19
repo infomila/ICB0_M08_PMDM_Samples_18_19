@@ -34,29 +34,44 @@ public class Scenario extends SurfaceView implements SurfaceHolder.Callback, Vie
     private Vector2D ballAcceleration;
     //--------------------------------------------------
 
-    private Bitmap mBackground;
+
     private Paint p;
     private ScenarioThread mThread;
     private SurfaceHolder mHolder;
     private Pad mPad;
     private MediaPlayer mMediaPlayer;
 
+
+    //--------------------------------------------------
+    private Bitmap mFalcon;
+    private Bitmap mBackground;
+    private Bitmap mBackgroundMask;
+    private final static double FALCON_RELATIVE_SIZE = 0.05;
+    //--------------------------------------------------
+
     public Scenario(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         mMediaPlayer = MediaPlayer.create(context, R.raw.boing);
 
-
-
-
         //setLayerType(View.LAYER_TYPE_SOFTWARE,null);
         ballCoordinate = new Vector2D( getWidth()/2, getHeight()/2 );
 
         setOnTouchListener(this);
-
+        //--------------------------------------------------------------------------
         // Precarreguem la imatge en un bitmap
-        mBackground = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.wall);
-
+        mBackground = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.fons_combinat);
+        mBackground = Bitmap.createScaledBitmap(mBackground, getWidth(), getHeight(), true);
+        //--------------------------------------------------------------------------
+        mBackgroundMask = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.mascara_fons_combinat);
+        mBackgroundMask = Bitmap.createScaledBitmap(mBackgroundMask, getWidth(), getHeight(), true);
+        //--------------------------------------------------------------------------
+        mFalcon = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.falcon);
+        int falconWidth = (int)(getWidth() * FALCON_RELATIVE_SIZE);
+        // apliquem la mateixa proporció a l'alçada
+        int falconHeight =   (falconWidth/mFalcon.getWidth())  * mFalcon.getHeight();
+        mFalcon = Bitmap.createScaledBitmap(mBackgroundMask, falconWidth, falconHeight, true);
+        //--------------------------------------------------------------------------
         p = new Paint();
 
         // Ens registrem al callback de creació, canvi  i destrucció de la Surface
@@ -79,11 +94,16 @@ public class Scenario extends SurfaceView implements SurfaceHolder.Callback, Vie
         // canvas.drawRGB(0,0,0);
         canvas.drawRGB(0,0,0);
 
-        Rect finestra = new Rect(0,0,getWidth(), getHeight());
-        canvas.drawBitmap(mBackground,finestra, finestra, p);
+        //Rect finestra = new Rect(0,0,getWidth(), getHeight());
+        //canvas.drawBitmap(mBackground,finestra, finestra, p);
 
-        p.setColor(Color.parseColor("#ff0000"));
-        canvas.drawCircle((float)ballCoordinate.getX(), (float)ballCoordinate.getY(), BALL_RADIUS, p);
+        canvas.drawBitmap(mBackground,0, 0, p);
+        canvas.drawBitmap(        mFalcon,
+                        (int) ballCoordinate.getX() - mFalcon.getWidth() /2 ,
+                        (int) ballCoordinate.getY() - mFalcon.getHeight()/2,
+                                  p );
+        //p.setColor(Color.parseColor("#ff0000"));
+        //canvas.drawCircle((float)ballCoordinate.getX(), (float)ballCoordinate.getY(), BALL_RADIUS, p);
 
 
     }
