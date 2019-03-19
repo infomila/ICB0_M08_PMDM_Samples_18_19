@@ -32,7 +32,7 @@ public class Pad extends View implements SensorEventListener, View.OnTouchListen
     //----- Gravity sensor stuff -----------------------------
     private float yAcceleration;
     private float xAcceleration;
-    private boolean gravityEnabled = true;
+    private boolean gravityEnabled = false;
     //----------------------------------
 
     private Bitmap mFletxaUp;
@@ -79,7 +79,7 @@ public class Pad extends View implements SensorEventListener, View.OnTouchListen
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
 
-        canvas.drawColor(Color.parseColor("#00ff00"));//LIME POWER
+        canvas.drawColor(Color.parseColor("#00000000"));//LIME POWER
 
         Paint p = new Paint();
         p.setColor(Color.parseColor("#ff00ff"));
@@ -144,7 +144,15 @@ public class Pad extends View implements SensorEventListener, View.OnTouchListen
     @Override
     public boolean onTouch(View v, MotionEvent event) {
 
-        //@TODO
+
+        padValue =  new Vector2D(event.getX()-cx, event.getY()-cy);
+        //escalem el vector per a que mesuri entre 0 i 10
+        padValue.scalarMultiply(10/radi);
+
+        if(event.getAction() == MotionEvent.ACTION_UP) {
+            padValue = new Vector2D(0,0);
+        }
+
         return true;
     }
 
