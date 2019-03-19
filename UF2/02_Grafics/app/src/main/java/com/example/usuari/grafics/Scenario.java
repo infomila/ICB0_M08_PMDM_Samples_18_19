@@ -46,32 +46,16 @@ public class Scenario extends SurfaceView implements SurfaceHolder.Callback, Vie
     private Bitmap mFalcon;
     private Bitmap mBackground;
     private Bitmap mBackgroundMask;
-    private final static double FALCON_RELATIVE_SIZE = 0.05;
+    private final static double FALCON_RELATIVE_SIZE = 0.08;
     //--------------------------------------------------
 
     public Scenario(Context context, AttributeSet attrs) {
         super(context, attrs);
 
         mMediaPlayer = MediaPlayer.create(context, R.raw.boing);
-
-        //setLayerType(View.LAYER_TYPE_SOFTWARE,null);
-        ballCoordinate = new Vector2D( getWidth()/2, getHeight()/2 );
-
         setOnTouchListener(this);
-        //--------------------------------------------------------------------------
-        // Precarreguem la imatge en un bitmap
-        mBackground = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.fons_combinat);
-        mBackground = Bitmap.createScaledBitmap(mBackground, getWidth(), getHeight(), true);
-        //--------------------------------------------------------------------------
-        mBackgroundMask = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.mascara_fons_combinat);
-        mBackgroundMask = Bitmap.createScaledBitmap(mBackgroundMask, getWidth(), getHeight(), true);
-        //--------------------------------------------------------------------------
-        mFalcon = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.falcon);
-        int falconWidth = (int)(getWidth() * FALCON_RELATIVE_SIZE);
-        // apliquem la mateixa proporció a l'alçada
-        int falconHeight =   (falconWidth/mFalcon.getWidth())  * mFalcon.getHeight();
-        mFalcon = Bitmap.createScaledBitmap(mBackgroundMask, falconWidth, falconHeight, true);
-        //--------------------------------------------------------------------------
+
+
         p = new Paint();
 
         // Ens registrem al callback de creació, canvi  i destrucció de la Surface
@@ -115,7 +99,21 @@ public class Scenario extends SurfaceView implements SurfaceHolder.Callback, Vie
 
         ballCoordinate = new Vector2D( getWidth()/2, getHeight()/2 );
         ballSpeed = new Vector2D(1,0);//Math.random()*10, Math.random()*10);
-
+        //setLayerType(View.LAYER_TYPE_SOFTWARE,null);
+        //--------------------------------------------------------------------------
+        // Precarreguem la imatge en un bitmap
+        mBackground = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.fons_combinat);
+        mBackground = Bitmap.createScaledBitmap(mBackground, getWidth(), getHeight(), true);
+        //--------------------------------------------------------------------------
+        mBackgroundMask = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.mascara_fons_combinat);
+        mBackgroundMask = Bitmap.createScaledBitmap(mBackgroundMask, getWidth(), getHeight(), true);
+        //--------------------------------------------------------------------------
+        mFalcon = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.falcon);
+        int falconWidth = (int)(getWidth() * FALCON_RELATIVE_SIZE);
+        // apliquem la mateixa proporció a l'alçada
+        int falconHeight =   (int)(((double)falconWidth/mFalcon.getWidth())  * mFalcon.getHeight());
+        mFalcon = Bitmap.createScaledBitmap(mFalcon, falconWidth, falconHeight, true);
+        //--------------------------------------------------------------------------
 
         //- Fil de control de la UI -------------------------------
         mThread = new ScenarioThread(this, mHolder);
@@ -138,7 +136,7 @@ public class Scenario extends SurfaceView implements SurfaceHolder.Callback, Vie
 
         //-----------------------------
         //    Gestió del moviment
-        if(mPad!=null) ballAcceleration = mPad.getPadValue().scalarMultiply(0.01);
+        if(mPad!=null) ballAcceleration = mPad.getPadValue().scalarMultiply(0.08);
         if(ballAcceleration.getNorm()==0) {
             ballAcceleration = ballSpeed.scalarMultiply( -0.1 );
         }
@@ -148,27 +146,58 @@ public class Scenario extends SurfaceView implements SurfaceHolder.Callback, Vie
         }
 
         Vector2D futurePosition = ballCoordinate.add( ballSpeed);
-        boolean xocaX=false, xocaY=false;
+
+
+        // Busquem si xoca als marges
+        boolean xocaX = false, xocaY = false;
 
         // detecció de col·lisió ....
-        xocaX = (ballCoordinate.getX()-BALL_RADIUS<0 ||  // xoc dreta
-                ballCoordinate.getX()+BALL_RADIUS>getWidth()  // xoc esquerra
+        xocaX = (ballCoordinate.getX() - BALL_RADIUS < 0 ||  // xoc dreta
+                ballCoordinate.getX() + BALL_RADIUS >= getWidth()  // xoc esquerra
         );
-        xocaY = (ballCoordinate.getY()-BALL_RADIUS<0 ||  // xoc dreta
-                ballCoordinate.getY()+BALL_RADIUS>getHeight()  // xoc esquerra
+        xocaY = (ballCoordinate.getY() - BALL_RADIUS < 0 ||  // xoc dreta
+                ballCoordinate.getY() + BALL_RADIUS >= getHeight()  // xoc esquerra
         );
 
 
+        if (!xocaX && !xocaY) {
 
-        if(!xocaX && !xocaY) {
-            ballCoordinate = futurePosition;
+            boolean xocaEscenari = verifyScenarioColision(ballCoordinate);
+            if(xocaEscenari) {
+                ballSpeed = new Vector2D(  -ballSpeed.getX(),-ballSpeed.getY() );
+                ballCoordinate = ballCoordinate.add(ballSpeed);
+
+            } else {
+                // No xoco amb ningú !!!!!
+                ballCoordinate = futurePosition;
+            }
         } else {
             mMediaPlayer.start();
-
-            ballSpeed = new Vector2D(  (xocaX?-1:1)*ballSpeed.getX(),
-                    (xocaY?-1:1)*ballSpeed.getY() );
-            ballCoordinate = ballCoordinate.add( ballSpeed);
+            ballSpeed = new Vector2D((xocaX ? -1 : 1) * ballSpeed.getX(),
+                    (xocaY ? -1 : 1) * ballSpeed.getY());
+            ballCoordinate = ballCoordinate.add(ballSpeed);
         }
+
+    }
+
+    private boolean verifyScenarioColision(Vector2D ballCoordinate) {
+        Vector2D falconHalfSize = new Vector2D(mFalcon.getWidth()/2, mFalcon.getHeight()/2);
+        Vector2D pi = ballCoordinate.subtract(falconHalfSize);
+        Vector2D pf = ballCoordinate.add(falconHalfSize);
+        int x=0, y=0;
+        int xF=0, yF=0;
+        for(    x=(int)pi.getX(),   xF=0;   x<(int)pf.getX();   x++ ,   xF++) {
+            for(y=(int)pi.getY(),   yF=0;   y<(int)pf.getY();   y++,    yF++ ) {
+                //"Seguro de vida", si les coordenades estan fora
+                if(x<0 || y<0 || x>=mBackgroundMask.getWidth() || y>=mBackgroundMask.getHeight() ) continue;
+                int falconColor =         mFalcon.getPixel(xF,yF);
+                int backColor   = mBackgroundMask.getPixel(x,y);
+                if( backColor == Color.BLACK && Color.alpha(falconColor)>0 ){
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
