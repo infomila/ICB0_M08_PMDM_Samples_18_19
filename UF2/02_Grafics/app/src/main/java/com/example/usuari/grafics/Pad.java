@@ -32,7 +32,7 @@ public class Pad extends View implements SensorEventListener, View.OnTouchListen
     //----- Gravity sensor stuff -----------------------------
     private float yAcceleration;
     private float xAcceleration;
-    private boolean gravityEnabled = false;
+    private boolean gravityEnabled = true;
     //----------------------------------
 
     private Bitmap mFletxaUp;
