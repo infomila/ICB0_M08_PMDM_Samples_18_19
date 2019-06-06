@@ -3,22 +3,22 @@
       {
         "id":0,
         "name":"begudes",
-        "imageURL":"http://92.222.27.83/~bernat/super/begudes.png"
+        "imageURL":"https://github.com/infomila/ICB0_M08_PMDM_Samples_18_19/raw/master/UF1/begudes.png"
       },
       {
         "id":1,
         "name":"carn",
-        "imageURL":"http://92.222.27.83/~bernat/super/carn.png"
+        "imageURL":"https://github.com/infomila/ICB0_M08_PMDM_Samples_18_19/raw/master/UF1/carn.png"
       },
       {
         "id":2,
         "name":"verdura",
-        "imageURL":"http://92.222.27.83/~bernat/super/verdura.png"
+        "imageURL":"https://github.com/infomila/ICB0_M08_PMDM_Samples_18_19/raw/master/UF1/verdura.png"
       },
       {
         "id":3,
         "name":"fruita",
-        "imageURL":"http://92.222.27.83/~bernat/super/fruita.png"
+        "imageURL":"https://github.com/infomila/ICB0_M08_PMDM_Samples_18_19/raw/master/UF1/fruita.png"
       }
     ],
   "products": [
